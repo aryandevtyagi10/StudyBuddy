@@ -1,15 +1,16 @@
 import java.util.; import java.io.;
 
-class Unit { String name; int hours;
+class Unit { String name; int hours; boolean completed;
 
 Unit(String name, int hours) {
     this.name = name;
     this.hours = hours;
+    this.completed = false;
 }
 
 }
 
-class Subject { String name; int totalHours; ArrayList<Unit> units = new ArrayList<>();
+class Subject { String name; int totalHours; int hoursCompleted = 0; ArrayList<Unit> units = new ArrayList<>();
 
 Subject(String name, int totalHours) {
     this.name = name;
@@ -20,14 +21,36 @@ void addUnit(String unitName, int unitHours) {
     units.add(new Unit(unitName, unitHours));
 }
 
+void markUnitCompleted(String unitName) {
+    for (Unit u : units) {
+        if (u.name.equalsIgnoreCase(unitName)) {
+            u.completed = true;
+            hoursCompleted += u.hours;
+            return;
+        }
+    }
+    System.out.println("Unit not found.");
+}
+
 void displayUnits() {
     System.out.println("\nSubject: " + name);
-    System.out.println("| Unit Name           | Hours Assigned |");
-    System.out.println("|----------------------|----------------|");
+    System.out.println("| Unit Name           | Hours | Completed |");
+    System.out.println("|---------------------|--------|-----------|");
     for (Unit u : units) {
-        System.out.printf("| %-20s | %-14d |\n", u.name, u.hours);
+        System.out.printf("| %-20s | %-6d | %-9s |\n", u.name, u.hours, u.completed ? "Yes" : "No");
     }
-    System.out.println("Total Hours for " + name + ": " + totalHours + "\n");
+    System.out.println("Total Hours: " + totalHours + ", Completed: " + hoursCompleted);
+    displayProgressBar();
+}
+
+void displayProgressBar() {
+    int progress = (int) (((double) hoursCompleted / totalHours) * 20);
+    System.out.print("Progress: [");
+    for (int i = 0; i < 20; i++) {
+        if (i < progress) System.out.print("#");
+        else System.out.print("-");
+    }
+    System.out.println("] " + (hoursCompleted * 100 / totalHours) + "%");
 }
 
 }
@@ -42,8 +65,10 @@ public static void main(String[] args) {
         System.out.println("3. Create Custom Date Sheet");
         System.out.println("4. View Study Plan");
         System.out.println("5. Start/Stop Study Timer");
-        System.out.println("6. Save Plan to File");
-        System.out.println("7. Exit");
+        System.out.println("6. Manually Log Study Hours");
+        System.out.println("7. Mark Unit as Completed");
+        System.out.println("8. Save Plan to File");
+        System.out.println("9. Exit");
         System.out.print("Choose an option: ");
 
         int choice = sc.nextInt();
@@ -55,8 +80,10 @@ public static void main(String[] args) {
             case 3 -> createDateSheet();
             case 4 -> viewStudyPlan();
             case 5 -> trackStudyTime();
-            case 6 -> savePlanToFile();
-            case 7 -> System.exit(0);
+            case 6 -> manualLog();
+            case 7 -> markUnitComplete();
+            case 8 -> savePlanToFile();
+            case 9 -> System.exit(0);
             default -> System.out.println("Invalid option");
         }
     }
@@ -130,12 +157,40 @@ static void trackStudyTime() {
     }
 }
 
+static void manualLog() {
+    System.out.print("Enter subject name: ");
+    String name = sc.nextLine();
+    if (!subjectMap.containsKey(name)) {
+        System.out.println("Subject not found.");
+        return;
+    }
+    Subject sub = subjectMap.get(name);
+    System.out.print("Enter hours to log: ");
+    int hrs = sc.nextInt();
+    sc.nextLine();
+    sub.hoursCompleted += hrs;
+    System.out.println("Logged " + hrs + " hours to " + name);
+}
+
+static void markUnitComplete() {
+    System.out.print("Enter subject name: ");
+    String subject = sc.nextLine();
+    if (!subjectMap.containsKey(subject)) {
+        System.out.println("Subject not found.");
+        return;
+    }
+    Subject sub = subjectMap.get(subject);
+    System.out.print("Enter unit name to mark completed: ");
+    String unit = sc.nextLine();
+    sub.markUnitCompleted(unit);
+}
+
 static void savePlanToFile() {
     try (PrintWriter writer = new PrintWriter("study_data.txt")) {
         for (Subject s : subjectMap.values()) {
-            writer.println("Subject: " + s.name + " (Total Hours: " + s.totalHours + ")");
+            writer.println("Subject: " + s.name + " (Total Hours: " + s.totalHours + ", Completed: " + s.hoursCompleted + ")");
             for (Unit u : s.units) {
-                writer.println("- Unit: " + u.name + ", Hours: " + u.hours);
+                writer.println("- Unit: " + u.name + ", Hours: " + u.hours + ", Completed: " + (u.completed ? "Yes" : "No"));
             }
             writer.println();
         }
@@ -151,3 +206,4 @@ static void savePlanToFile() {
 }
 
 }
+
