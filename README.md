@@ -9,7 +9,6 @@ StudyBuddyPlanner is a simple console-based Java application that helps you mana
 - View your progress through a textual progress bar
 - Save all data to a `.txt` file
 
----
 
 ## 🛠️ Features
 
@@ -33,13 +32,12 @@ StudyBuddyPlanner is a simple console-based Java application that helps you mana
 ### ✅ File Export
 - Save all study data to `study_data.txt`
 
----
-
 ## 📂 Project Structure
 
-StudyBuddy/ ├── StudyBuddyPlanner.java   
+StudyBuddy 
+├── StudyBuddyPlanner.java   
 └── study_data.txt     
----
+
 
 ## 🚀 Getting Started
 
@@ -52,3 +50,4 @@ StudyBuddy/ ├── StudyBuddyPlanner.java
 ```bash
 javac StudyBuddyPlanner.java
 java StudyBuddyPlanner
+```
