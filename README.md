@@ -34,7 +34,7 @@ StudyBuddyPlanner is a simple console-based Java application that helps you mana
 
 ## 📂 Project Structure
 
-###StudyBuddy
+### StudyBuddy
 
 ├── StudyBuddyPlanner.java
 
